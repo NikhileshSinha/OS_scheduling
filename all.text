@@ -1,0 +1,214 @@
+
+//FCFS
+/*
+#include <stdio.h>
+#include <conio.h>
+void main()
+{
+    int i, j, bt[10], n, wt[10], tt[10], w1 = 0, t1 = 0;
+    float aw, at;
+    printf("enter no. of processes:\n");
+    scanf("%d", &n);
+    printf("enter the burst time of processes:");
+    for (i = 0; i < n; i++)
+        scanf("%d", &bt[i]);
+    wt[0] = 0;
+    tt[0] = bt[0];
+
+    for (i = 0; i < n; i++)
+    {
+        wt[i + 1] = bt[i] + wt[i];
+        tt[i + 1] = tt[i] + bt[i + 1];
+        w1 = w1 + wt[i];
+        t1 = t1 + tt[i];
+    }
+    aw = w1 / n;
+    at = t1 / n;
+    printf("\nbt\t wt\t tt\n");
+    for (i = 0; i < n; i++)
+        printf("%d\t %d\t %d\n", bt[i], wt[i], tt[i]);
+    printf("aw=%f\n,at=%f\n", aw, at);
+    getch();
+}
+*/
+
+//SJF
+/*
+#include <stdio.h>
+#include <conio.h>
+void main()
+{
+    int i, j, bt[10], t, n, wt[10], tt[10], w1 = 0, t1 = 0;
+    float aw, at;
+    printf("enter no. of processes:\n");
+    scanf("%d", &n);
+    printf("enter the burst time of processes:");
+    for (i = 0; i < n; i++)
+        scanf("%d", &bt[i]);
+    for (i = 0; i < n; i++)
+    {
+        for (j = i; j < n; j++)
+            if (bt[i] > bt[j])
+            {
+                t = bt[i];
+                bt[i] = bt[j];
+                bt[j] = t;
+            }
+    }
+
+    for (i = 0; i < n; i++)
+        printf("%d", bt[i]);
+    wt[0] = 0;
+    tt[0] = bt[0];
+    for (i = 0; i < n; i++)
+    {
+        wt[i + 1] = bt[i] + wt[i];
+        tt[i + 1] = tt[i] + bt[i + 1];
+        w1 = w1 + wt[i];
+        t1 = t1 + tt[i];
+    }
+    aw = w1 / n;
+    at = t1 / n;
+    printf("\nbt\t wt\t tt\n");
+    for (i = 0; i < n; i++)
+        printf("%d\t %d\t %d\n", bt[i], wt[i], tt[i]);
+    printf("aw=%f\n,at=%f\n", aw, at);
+    getch();
+}
+*/
+
+//Round Robins
+
+/*
+#include <stdio.h>
+#include <conio.h>
+void main()
+{
+    int bt[10], bt1[10], wt[10], tat[10], n, i, tq, t=0, cont=0;
+    double awt, atat;
+    printf("Enter number of processes:");
+    scanf("%d", &n);
+    printf("Enter burst time for sequences:");
+    for (i = 0; i < n; i++){
+        scanf("%d", &bt[i]);
+        bt1[i] = bt[i];
+    }
+    printf("Enter time quantum:");
+    scanf("%d", &tq);
+    
+    //Main while loop
+    while(cont < n){
+        //For loop iterates each time
+        for (i = 0; i < n; i++)
+        {
+            //it remaning burst time is greater or equal to time quantum
+            if (bt1[i] >= tq)
+            {
+                bt1[i] -= tq;   //decrement remaning burst time
+                t += tq;        //increment total time
+
+                if (bt1[i] == 0)//if remaning burst time become zero
+                {
+                    tat[i] = t; //update turnaround time
+
+                    //update wating time
+                    int temp;
+                    if(bt[i] % tq == 0)
+                        temp = bt[i];
+                    else
+                        temp = bt[i]-1;
+                    wt[i] = t - temp;
+                    cont++;     //increment count
+                }
+            }
+
+            //if remaning burst time is less than time quantum AND more than 0 
+            else if (bt1[i] < tq && bt1[i] > 0)
+            {
+                t += bt1[i];    //increment total time
+                tat[i] = t;     //update turnaround time
+
+                //update wating time
+                int temp;
+                temp = bt[i] - 1;
+                wt[i] = t -bt1[i] - temp;
+                //Set remaning burst time to 0
+                bt1[i] = 0;
+                cont++;         //increment count
+            }
+        }
+    }
+
+    //printing values
+    printf("Printing values: \n");
+    for ( i = 0; i < n; i++){
+        printf("%d %d\n",wt[i],tat[i]);
+        awt += wt[i];
+        atat += tat[i];
+    }
+     printf("Average wating time: %f\nAverage turnaround time: %f\n",(awt/n),(atat/n));
+}
+*/
+
+
+//Prority
+/*
+#include <stdio.h>
+#include <conio.h>
+void main()
+{
+    int i, j, bt[10], n, wt[10], tt[10], w1 = 0, t1 = 0, prior[10], pno[10], s;
+    float aw, at;
+    printf("enter no. of processes:\n");
+    scanf("%d", &n);
+    
+    for (i = 0; i < n; i++){
+        printf("Burst time of %d: ",(i+1));
+        scanf("%d", &bt[i]);
+        printf("Priority of %d: ", (i + 1));
+        scanf("%d", &prior[i]);
+        pno[i] = i+1;
+    }
+
+
+    for(i=0; i<n; i++){
+        for(j=0; j<n; j++){
+            if(prior[i]<prior[j]){
+            
+                s = prior[i];
+                prior[i] = prior[j];
+                prior[j] = s;
+
+                s = bt[i];
+                bt[i] = bt[j];
+                bt[j] =s;
+
+                s = pno[i];
+                pno[i] = pno[j];
+                pno[j] = s;
+
+            }
+        }
+    }
+
+
+    wt[0] = 0;
+    tt[0] = bt[0];
+
+    for (i = 0; i < n; i++)
+    {
+        wt[i + 1] = bt[i] + wt[i];
+        tt[i + 1] = tt[i] + bt[i + 1];
+        w1 = w1 + wt[i];
+        t1 = t1 + tt[i];
+        aw = w1 / n;
+        at = t1 / n;
+    }
+    
+    printf("\npn\tbt\t wt\t tt\n");
+    for (i = 0; i < n; i++)
+        printf("%d\t%d\t %d\t %d\n",pno[i], bt[i], wt[i], tt[i]);
+    printf("aw=%f\nat=%f\n", aw, at);
+    getch();
+}
+*/
